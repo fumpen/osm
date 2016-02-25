@@ -24,6 +24,7 @@ extern void process_set_pagetable(pagetable_t*);
 
 process_control_block_t process_table[PROCESS_MAX_PROCESSES];
 
+
 /* Return non-zero on error. */
 int setup_new_process(TID_t thread,
                       const char *executable, const char **argv_src,
@@ -207,4 +208,60 @@ void process_start(const char *executable, const char **argv)
   _context_set_sp(&user_context, stack_top);
 
   thread_goto_userland(&user_context);
+}
+
+context_t run_new_process(context_t user_context)
+{
+  memoryset(&user_context, 0, sizeof(user_context));
+  return user_context;
+}
+
+process_id_t process_spawn(char const* executable, char const **argv)
+{
+  TID_t my_thread;
+  virtaddr_t entry_point;
+  int ret;
+  context_t user_context;
+  virtaddr_t stack_top;
+
+  my_thread = thread_create( run_new_process(user_context), entry_point);
+  
+  ret = setup_new_process(my_thread, executable, argv,
+                          &entry_point, &stack_top);
+  thread_run(ret);
+
+  if (ret != 0) {
+    return -1;
+  }
+
+  process_set_pagetable(thread_get_thread_entry(my_thread)->pagetable);
+
+  /* Initialize the user context. (Status register is handled by
+     thread_goto_userland) */
+  _context_set_ip(&user_context, entry_point);
+  _context_set_sp(&user_context, stack_top);
+
+  thread_goto_userland(&user_context);
+
+  proc_id = thread_get_thread_entry(my_thread)->process_id;
+
+  process_table[proc_id].state = RUNNING;
+
+  return proc_id;
+}
+
+void process_exit(int retval)
+{
+
+  thread_table_t *thr = thread_get_thread_entry(retval);
+
+  vm_destroy_pagetable(thr->pagetable);
+  thr->pagetable = NULL;
+
+  thread_finish(); 
+}
+
+int process_join(process_id_t pid)
+{
+  
 }
