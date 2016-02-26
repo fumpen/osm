@@ -182,6 +182,7 @@ int setup_new_process(TID_t thread,
   return 0;
 }
 
+/*
 void process_start(const char *executable, const char **argv)
 {
   TID_t my_thread;
@@ -195,13 +196,13 @@ void process_start(const char *executable, const char **argv)
                           &entry_point, &stack_top);
 
   if (ret != 0) {
-    return; /* Something went wrong. */
+    return; * Something went wrong. *
   }
 
   process_set_pagetable(thread_get_thread_entry(my_thread)->pagetable);
 
-  /* Initialize the user context. (Status register is handled by
-     thread_goto_userland) */
+  * Initialize the user context. (Status register is handled by
+     thread_goto_userland) *
   memoryset(&user_context, 0, sizeof(user_context));
 
   _context_set_ip(&user_context, entry_point);
@@ -209,47 +210,67 @@ void process_start(const char *executable, const char **argv)
 
   thread_goto_userland(&user_context);
 }
+*/
 
-context_t run_new_process(context_t user_context)
+void run_new_process(uint32_t id)
 {
+  context_t user_context;
+  int index;
+  
+  index = id;
+
   memoryset(&user_context, 0, sizeof(user_context));
-  return user_context;
+
+  _context_set_ip(&user_context, process_table[index].entry_point);
+  _context_set_sp(&user_context, process_table[index].stack_top);
+
+  thread_goto_userland(&user_context);
 }
 
 process_id_t process_spawn(char const* executable, char const **argv)
 {
   TID_t my_thread;
-  virtaddr_t entry_point;
   int ret;
-  context_t user_context;
-  virtaddr_t stack_top;
-
-  my_thread = thread_create( run_new_process(user_context), entry_point);
+  uint32_t thread_id;
+  int i;
+  process_id_t proc_id;
   
-  ret = setup_new_process(my_thread, executable, argv,
-                          &entry_point, &stack_top);
-  thread_run(ret);
+  thread_id = PROCESS_MAX_PROCESSES + 1;
 
-  if (ret != 0) {
+  for(i=0; i < PROCESS_MAX_PROCESSES; i++){
+    if(process_table[i].state == READY)
+      {
+	thread_id = i;
+	break;
+      }
+  }
+  
+  if (thread_id == (PROCESS_MAX_PROCESSES + 1)) {
     return -1;
   }
 
+
+  my_thread = thread_create( &run_new_process, thread_id);
+  
+  ret = setup_new_process(my_thread, executable, argv,
+                          &process_table[i].entry_point, &process_table[i].stack_top);  
+  if (ret != 0) {
+    return -1;
+  }
+  
+  thread_run(ret);
+
   process_set_pagetable(thread_get_thread_entry(my_thread)->pagetable);
 
-  /* Initialize the user context. (Status register is handled by
-     thread_goto_userland) */
-  _context_set_ip(&user_context, entry_point);
-  _context_set_sp(&user_context, stack_top);
+  proc_id = thread_id;
 
-  thread_goto_userland(&user_context);
+  process_table[thread_id].state = RUNNING;
 
-  proc_id = thread_get_thread_entry(my_thread)->process_id;
-
-  process_table[proc_id].state = RUNNING;
+  sleepq_add(&process_table[i]);
 
   return proc_id;
 }
-
+/*
 void process_exit(int retval)
 {
 
@@ -260,8 +281,27 @@ void process_exit(int retval)
 
   thread_finish(); 
 }
+*/
+
+void process_init(void)
+{  
+  int i;
+  
+ sleepq_init();
+  
+  for(i=0; i < PROCESS_MAX_PROCESSES; i++){
+    process_table[i].state = READY;
+    process_table[i].process_id = i;
+    process_table[i].entry_point = 0;
+    process_table[i].stack_top = 0;
+  }
+}
+
 
 int process_join(process_id_t pid)
 {
-  
+  sleepq_wake(&process_table[pid]);
+  process_table[pid].state = READY;
+  return 0;
 }
+

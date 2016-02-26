@@ -16,16 +16,17 @@
 #define PROCESS_MAX_FILES      10
 
 typedef int process_id_t;
-enum proc_state {EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE};
+typedef enum {READY, SLEEPING, RUNNABLE, RUNNING, ZOMBIE} proc_state;
 
 typedef struct {
   process_id_t process_id;
-  enum proc_state state;
+  
+  virtaddr_t entry_point;
+  virtaddr_t stack_top;
+  proc_state state;
 } process_control_block_t;
 
 void process_start(const char *executable, const char **argv);
-
-void user_exception_handle(int exception);
 
 /* Load and run the executable as a new process in a new thread
    Argument: executable file name; Returns: process ID of the new process */
