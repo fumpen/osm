@@ -270,7 +270,8 @@ process_id_t process_spawn(char const* executable, char const **argv)
 
   return proc_id;
 }
-/*
+
+
 void process_exit(int retval)
 {
 
@@ -281,7 +282,6 @@ void process_exit(int retval)
 
   thread_finish(); 
 }
-*/
 
 void process_init(void)
 {  
@@ -305,3 +305,21 @@ int process_join(process_id_t pid)
   return 0;
 }
 
+process_id_t process_get_current_process(void)
+{
+  TID_t my_thread;
+
+  my_thread = thread_get_current_thread();
+
+  return my_thread;
+}
+
+process_control_block_t *process_get_current_process_entry(void)
+{
+  
+  process_id_t y;
+
+  y = process_get_current_process();
+  
+  return &process_table[y];
+}

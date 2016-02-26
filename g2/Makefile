@@ -1,4 +1,4 @@
-STUDENTS=graham_knuth_patashnik
+STUDENTS=frederik_Jeppe_opg2
 ASSIGNMENT=2
 VERSION=1
 
