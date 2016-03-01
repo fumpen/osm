@@ -109,6 +109,9 @@ void init(void)
   kwrite("Initializing virtual memory\n");
   vm_init();
 
+  kwrite("Initializing user process system\n");
+  process_init();
+
   kprintf("Creating initialization thread\n");
   startup_thread = thread_create(&init_startup_thread, 0);
   thread_run(startup_thread);

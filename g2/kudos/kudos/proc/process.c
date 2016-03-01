@@ -22,7 +22,20 @@
 
 extern void process_set_pagetable(pagetable_t*);
 
+spinlock_t proc_lock;
 process_control_block_t process_table[PROCESS_MAX_PROCESSES];
+
+void process_init(){
+
+    int i;
+
+    for(i = 0; i < PROCESS_MAX_PROCESSES; i++){
+        process_table[i].state = FREE;   
+    }
+}
+
+
+
 
 /* Return non-zero on error. */
 int setup_new_process(TID_t thread,
@@ -181,30 +194,90 @@ int setup_new_process(TID_t thread,
   return 0;
 }
 
-void process_start(const char *executable, const char **argv)
+void process_run(uint32_t p)
 {
-  TID_t my_thread;
-  virtaddr_t entry_point;
-  int ret;
-  context_t user_context;
-  virtaddr_t stack_top;
+    process_id_t pid = (process_id_t)p;
+    process_control_block_t *proc;
+    TID_t my_thread = thread_get_current_thread();
+    context_t user_context;
 
-  my_thread = thread_get_current_thread();
-  ret = setup_new_process(my_thread, executable, argv,
-                          &entry_point, &stack_top);
+    interrupt_status_t intr;
+    intr = _interrupt_disable();
+    spinlock_acquire(&proc_lock);
 
-  if (ret != 0) {
-    return; /* Something went wrong. */
-  }
 
-  process_set_pagetable(thread_get_thread_entry(my_thread)->pagetable);
+    process_set_pagetable(thread_get_thread_entry(my_thread)->pagetable);
 
-  /* Initialize the user context. (Status register is handled by
-     thread_goto_userland) */
-  memoryset(&user_context, 0, sizeof(user_context));
+    proc = &process_table[pid];
 
-  _context_set_ip(&user_context, entry_point);
-  _context_set_sp(&user_context, stack_top);
+    proc->state = RUNNING;
+    thread_get_thread_entry(my_thread)->process_id = pid;
+   
+    memoryset(&user_context, 0, sizeof(user_context));
 
-  thread_goto_userland(&user_context);
+    _context_set_ip(&user_context, proc->entry_point);
+    _context_set_sp(&user_context, proc->stack_top);
+
+    spinlock_release(&proc_lock);
+    _interrupt_set_state(intr);
+
+
+    thread_goto_userland(&user_context);
+}
+
+process_id_t find_free_process()
+{
+    interrupt_status_t intr;
+    intr = _interrupt_disable();
+    spinlock_acquire(&proc_lock);
+
+    process_id_t free = -1;
+    
+    int i;
+    for(i = 0; i < PROCESS_MAX_PROCESSES; i++){
+        if(process_table[i].state == FREE){
+            free = i;
+            process_table[i].state = STARTING;
+            break;
+        }
+    }
+
+    spinlock_release(&proc_lock);
+    _interrupt_set_state(intr);
+
+    return free;
+}
+
+int process_spawn(char const* executable, char const **argv)
+{
+    TID_t my_thread;
+    virtaddr_t entry_point;
+    virtaddr_t stack_top;
+    process_id_t new_pid;
+
+    new_pid = find_free_process();
+    my_thread = thread_create(&process_run, new_pid);
+
+    setup_new_process(my_thread, executable, argv,
+                        &entry_point, &stack_top);
+
+    process_table[new_pid].entry_point = entry_point;
+    process_table[new_pid].stack_top = stack_top;
+
+    thread_run(my_thread);
+
+    return new_pid;
+}
+
+
+int process_join(process_id_t pid)
+{
+    pid = pid;
+
+    while(1)
+    {
+        
+    }
+
+    return 0;
 }

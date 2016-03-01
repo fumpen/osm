@@ -17,68 +17,19 @@
 
 typedef int process_id_t;
 
-
-/*-----------------------------------------------------------------------------
- *  The different states a process can be in
- *-----------------------------------------------------------------------------*/
-enum proc_state { UNUSED, EMBRYO, SLEEPING,
-                  RUNNABLE, RUNNING, ZOMBIE };
+enum proc_state {SLEEPING, RUNNABLE, RUNNING, ZOMBIE};
 
 typedef struct {
- 
- /*-----------------------------------------------------------------------------
-  * Process state  
-  *-----------------------------------------------------------------------------*/
+  /* Remove this when you add other fields. */
+  process_id_t process_id;
   enum proc_state state;
-  
-
-
-  /*-----------------------------------------------------------------------------
-   *  Process ID
-   *-----------------------------------------------------------------------------*/
-  int pid;
 
 } process_control_block_t;
 
+void process_start(const char *executable, const char **argv);
 
-/*-----------------------------------------------------------------------------
- *  Load and run the executable as a new process in a new thread
- *-----------------------------------------------------------------------------*/
-process_id_t process_spawn(char const* executable, char const **argv);
+process_id_t process_spawn(const char *executable, const char **argv);
 
 
-/*-----------------------------------------------------------------------------
- *  Stop the current process and the kernel thread in which it runs
- *-----------------------------------------------------------------------------*/
-void process_exit(int retval);
-
-
-
-/*-----------------------------------------------------------------------------
- *  Wait for the given process to terminate
- *-----------------------------------------------------------------------------*/
-int process_join(process_id_t pid);
-
-
-
-
-/*-----------------------------------------------------------------------------
- *  Initialize process table
- *-----------------------------------------------------------------------------*/
-void process_init(void);
-
-
-
-/*-----------------------------------------------------------------------------
- *  Get current process
- *-----------------------------------------------------------------------------*/
-process_id_t process_get_current_process(void);
-
-
-
-/*-----------------------------------------------------------------------------
- *  Get PCB of current process
- *-----------------------------------------------------------------------------*/
-process_control_block_t *process_get_current_process_entry(void);
 
 #endif
