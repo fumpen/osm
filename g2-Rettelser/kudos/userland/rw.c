@@ -27,7 +27,6 @@ int main(void) {
   printf("This is the end, my only friend, the end..\n");
 
   // No negative tests, too lazy.
-
   syscall_halt();
   return 0;
 }

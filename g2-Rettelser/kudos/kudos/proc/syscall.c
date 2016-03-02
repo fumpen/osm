@@ -23,22 +23,7 @@ int syscall_read(char *buffer) {
   return 1;
 }
 
-int syscall_spawn(char const* filename){
-    process_id_t child = process_spawn(filename, 0); 
-    return child;
-}
 
-
-void syscall_exit(int val){
-    process_exit(val);
-}
-
-int syscall_join(int pid){
-    if (process_join(pid) < 0){
-        return -1;
-    }
-    return process_join(pid);
-}
 
 /**
  * Handle system calls. Interrupts are enabled when this function is
@@ -70,13 +55,13 @@ uintptr_t syscall_entry(uintptr_t syscall,
     return syscall_write((const void*)arg1, (int)arg2);
     break;
   case SYSCALL_SPAWN:
-    return syscall_spawn((char const*) arg1);
+    return process_spawn((char const*) arg0, NULL);
     break;
   case SYSCALL_JOIN:
-    return syscall_join((int) arg1);
+    return process_join((int) arg1);
     break;
   case SYSCALL_EXIT:
-    syscall_exit((int) arg1);
+    process_exit((int) arg1);
     break;
   default:
     KERNEL_PANIC("Unhandled system call\n");
