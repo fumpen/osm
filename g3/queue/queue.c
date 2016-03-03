@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <pthread.h>
 
 #include "queue.h"
 
@@ -7,6 +8,9 @@
 #define SHRINK_FACTOR   4
 
 // All of the below functions assume that q is not NULL.
+
+pthread_mutex_t lock;
+pthread_cond_t condition;
 
 static inline size_t
 parent(size_t i) {
@@ -57,6 +61,8 @@ queue_heap_down(struct node *array, size_t count, size_t i) {
 int
 queue_init(struct queue *q) {
   /* FIXME: Make this function also initialize the pthread objects. */
+  pthread_mutex_init(&lock, NULL);
+  pthread_cond_init(&condition, NULL);
 
   q->root = (struct node *)malloc(
     sizeof(struct node) * INIT_SIZE);
@@ -88,6 +94,7 @@ queue_grow(struct queue *q) {
 int
 queue_push(struct queue *q, int pri) {
   /* FIXME: Make this function thread-safe. */
+  pthread_mutex_lock(&lock);
 
   int retval;
 
@@ -101,7 +108,9 @@ queue_push(struct queue *q, int pri) {
 
   queue_heap_up(q->root, q->count);
   q->count++;
-
+  
+  pthread_mutex_unlock(&lock);
+  pthread_cond_signal(&condition);
   return 0;
 }
 
@@ -109,9 +118,10 @@ int
 queue_pop(struct queue *q, int *pri_ptr) {
   /* FIXME: Make this function thread-safe.  Also, if the queue is empty on pop,
      block until something is pushed. */
+  pthread_mutex_lock(&lock);
 
   if (q->count == 0) {
-    return QUEUE_UNDERFLOW;
+    pthread_cond_wait(&condition, &lock);
   }
   *pri_ptr = q->root->pri;
 
@@ -121,6 +131,7 @@ queue_pop(struct queue *q, int *pri_ptr) {
   exchange(q->root, q->next);
   queue_heap_down(q->root, q->count, 0);
 
+  pthread_mutex_lock(&lock);
   return 0;
 }
 
