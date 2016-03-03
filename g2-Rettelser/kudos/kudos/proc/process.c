@@ -261,11 +261,29 @@ int process_spawn(char const* executable, char const **argv)
     virtaddr_t stack_top;
     process_id_t new_pid;
 
-    new_pid = find_free_process();
-    my_thread = thread_create(&process_run, new_pid);
+    if(strlen(executable) > 16){
+      kprintf("file name too long \n");
+      return -1;
+    }
 
-    setup_new_process(my_thread, executable, argv,
-                        &entry_point, &stack_top);
+    new_pid = find_free_process();
+
+    if(new_pid == -1){
+      kprintf("no free processes \n");
+	return -1;
+    }
+
+    my_thread = thread_create(&process_run, new_pid);
+    
+
+    int setup_new_process_retval;
+    setup_new_process_retval = setup_new_process(my_thread, executable, argv,
+						 &entry_point, &stack_top);
+
+    if(setup_new_process_retval != 0){
+      kprintf("error in setup_new_process\n");
+      return -1;
+    }
 
     process_table[new_pid].entry_point = entry_point;
     process_table[new_pid].stack_top = stack_top;
@@ -282,6 +300,11 @@ int process_join(process_id_t pid)
 
 
     new_pid = process_get_current_process();
+
+    if(new_pid < 0 && pid < 0){
+      kprintf("something failed with the process id's \n");
+      return -1;
+    }
 
     if(process_table[pid].parent != new_pid){
         return -1;
