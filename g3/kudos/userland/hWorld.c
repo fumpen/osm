@@ -25,19 +25,12 @@ int main(void){
     
     usr_sem_t *t;
 
-    printf("Starting hWorld!!\n");
-    
-    int test, test1;
+    printf("Child\n");
 
-    t = syscall_usr_sem_open("test1", 10);
-    test = syscall_usr_sem_procure(t);
-    
-    printf("procure: %d\n", test);
-    
-    test1 = syscall_usr_sem_vacate(t);
-    printf("vacate: %d\n", test1);
 
-    printf("DONE\n");
+    t = syscall_usr_sem_open("child", 10);
+    
+    syscall_usr_sem_vacate(&t);
 
     return 0;
 }

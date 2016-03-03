@@ -24,20 +24,20 @@
 int main(void) {
     
     char prog[] = "[disk]hWorld.mips32";
-    int child1, child2, child3;
+    
+    usr_sem_t *parent2;
 
 
-    printf("Starting the 1'st program %s\n", prog);
-    child1 = syscall_spawn(prog, NULL);
-    printf("child1: %d\n", child1);
+    printf("Parent: begin\n");
+    syscall_spawn(prog, NULL);
+
+    parent2 = syscall_usr_sem_open("child", 100);
+    syscall_usr_sem_procure(&parent2);
+
+    for(int i = 0; i < 5000; i++);
+
+    printf("Parent: end\n");
     
-    printf("Starting the 2'nd program %s\n", prog);
-    child2 = syscall_spawn(prog, NULL);
-    printf("child2: %d\n", child2);
-    
-    printf("Starting the 3'rd program %s\n", prog);
-    child3 = syscall_spawn(prog, NULL); 
-    printf("child3: %d\n", child3);
-    
+
     return 0;
 }
