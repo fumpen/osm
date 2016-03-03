@@ -24,7 +24,7 @@
 #include "lib/libc.h"
 #include "proc/process.h"
 #include "vm/memory.h"
-
+#include "proc/usr_sem.h"
 /* Whether other processors than 0 may continue in SMP mode.
    CPU0 runs the actual init() below, other CPUs loop and wait
    this variable to be set before they will enter context switch
@@ -96,6 +96,9 @@ void init(void)
 
   kwrite("Initializing semaphores\n");
   semaphore_init();
+
+  kwrite("Initializing user semaphores\n");
+  usr_sem_init();
 
   kwrite("Initializing device drivers\n");
   device_init();

@@ -314,14 +314,12 @@ int process_join(process_id_t pid)
     intr = _interrupt_disable();
     spinlock_acquire(&proc_lock);
 
-    while(process_table[pid].state != ZOMBIE){
+    while(process_table[pid].state == ZOMBIE){
         sleepq_add(&process_table);
         thread_switch();
    
     }
-
-    
-    
+        
     process_table[pid].state = FREE;
 
 
@@ -339,6 +337,10 @@ void process_exit(int retval)
     
     process_id_t pid = my_thread->process_id;
 
+    interrupt_status_t intr;
+    intr = _interrupt_disable();
+    spinlock_acquire(&proc_lock);
+    
     process_table[pid].state = ZOMBIE;
     process_table[pid].retval = retval;
 
@@ -347,6 +349,9 @@ void process_exit(int retval)
 
     sleepq_wake_all(&process_table);
 
+    spinlock_release(&proc_lock);
+    _interrupt_set_state(intr);
+    
     thread_finish();
 
 }
