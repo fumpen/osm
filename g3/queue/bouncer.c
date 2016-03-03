@@ -1,83 +1,68 @@
 #include <stdio.h>  // printf, scanf, stdin
 #include <ctype.h>  // isspace
+#include <pthread.h>
 
 #include "queue.h"
 
 static struct queue queue;
 
-static inline char
-skip_spaces() {
-  char c;
 
-  do {
-    c = getc(stdin);
-  } while (isspace(c));
+void *push(void *args){
 
-  return c;
+    args = args;
+    queue_push(&queue, 2);
+
+    printf("PUSH ID 1\n");    
+
+    return NULL;
 }
 
-static inline void
-skip_until_space() {
-  char c;
 
-  do {
-    c = getc(stdin);
-  } while (!(isspace(c) || c == EOF));
+
+void *push2(void *args){
+
+    args = args;
+    queue_push(&queue, 3);
+
+    printf("PUSH ID 2 \n");    
+
+    return NULL;
 }
 
-void
-loop() {
-  char op = 0;
-  int pri = 0;
+void *pop(void *args){
+    
+    int *x_ptr = (int *)args;
 
-  while(1) {
+    printf("BLOCK\n");
+    queue_pop(&queue, &x_ptr);
+    printf("DATA: %d\n", x_ptr);
 
-    op = skip_spaces();
-
-    switch (op) {
-    case EOF:
-      return;
-      break;
-
-    case 'p':
-      if (queue_pop(&queue, &pri) != 0) {
-        printf("!! Queue underflow.\n");
-      } else {
-        printf("=> %d\n", pri);
-      }
-      break;
-
-    default:
-      ungetc(op, stdin);
-      if (scanf("%d", &pri) == 1) {
-        if (queue_push(&queue, pri) != 0) {
-          printf("!! Queue overflow.\n");
-        }
-      } else {
-        skip_until_space();
-        printf("Invalid input!\n");
-      }
-    }
-  }
-}
-
-void
-shutdown() {
-  int pri;
-
-  while (queue_pop(&queue, &pri) == 0)
-    ;
+    return NULL;
 }
 
 int
 main() {
-  queue_init(&queue);
+    pthread_t thread_ID, thread_ID2;
 
-  loop();
 
-  shutdown();
 
-  queue_destroy(&queue);
+    queue_init(&queue);
+    printf("Queue init\n");
 
-  return 0;
+
+    int *x;
+
+    pthread_create(&thread_ID, NULL, pop, &x);
+    pthread_create(&thread_ID2, NULL, push, NULL);
+
+    pthread_join(thread_ID, NULL);
+    
+    for(int i = 0; i < 50000; i++);
+    
+    pthread_join(thread_ID2, NULL);
+    
+
+    printf("QUEUE DONE\n");
+
+    return 0;
 }

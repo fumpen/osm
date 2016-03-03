@@ -131,7 +131,7 @@ queue_pop(struct queue *q, int *pri_ptr) {
   exchange(q->root, q->next);
   queue_heap_down(q->root, q->count, 0);
 
-  pthread_mutex_lock(&lock);
+  pthread_mutex_unlock(&lock);
   return 0;
 }
 
