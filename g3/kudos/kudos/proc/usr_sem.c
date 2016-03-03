@@ -40,7 +40,7 @@ static usr_sem_t sem_table[MAX_SEM];
 
 
 
-void user_sem_init(void){
+void usr_sem_init(void){
     for(int i = 0; i < MAX_SEM; i++){
         sem_table[i].value = -1;
     }
@@ -61,13 +61,15 @@ usr_sem_t* usr_sem_open(const char* name, int value){
             if(stringcmp(sem_table[i].name, name) == 0){
                 return NULL;
             }
+            if(sem_table[i].value == -1){
+                sem_table[i].sem = semaphore_create(value);
+                stringcopy(sem_table[i].name, name, NAME_LENGTH);
+                sem_table[i].value = 0;
+                return &sem_table[i];
+            }
 
-        sem_table[i].sem = semaphore_create(value);
-        stringcopy(sem_table[i].name, name, NAME_LENGTH);
-        sem_table[i].value = 0;
         }
 
-        return &sem_table[i];
     }
 
     

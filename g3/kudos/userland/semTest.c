@@ -18,16 +18,26 @@
 
 #include "lib.h"
 
-#define BUFFER 60
+
+
 
 int main(void) {
     
-
     char prog[] = "[disk]hWorld.mips32";
-    int child;
+    int child1, child2, child3;
 
-    printf("Starting program %s\n", prog);
+
+    printf("Starting the 1'st program %s\n", prog);
+    child1 = syscall_spawn(prog, NULL);
+    printf("child1: %d\n", child1);
     
-
+    printf("Starting the 2'nd program %s\n", prog);
+    child2 = syscall_spawn(prog, NULL);
+    printf("child2: %d\n", child2);
+    
+    printf("Starting the 3'rd program %s\n", prog);
+    child3 = syscall_spawn(prog, NULL); 
+    printf("child3: %d\n", child3);
+    
     return 0;
 }
