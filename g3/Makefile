@@ -1,4 +1,4 @@
-STUDENTS=stallman_gates_bagger
+STUDENTS=Frederik_Jeppe_OSM
 ASSIGNMENT=3
 VERSION=1
 

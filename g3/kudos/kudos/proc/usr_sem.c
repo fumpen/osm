@@ -61,12 +61,10 @@ usr_sem_t* usr_sem_open(const char* name, int value){
             if(stringcmp(sem_table[i].name, name) == 0){
                 return NULL;
             }
-            if(sem_table[i].value == -1){
                 sem_table[i].sem = semaphore_create(value);
                 stringcopy(sem_table[i].name, name, NAME_LENGTH);
                 sem_table[i].value = 0;
                 return &sem_table[i];
-            }
 
         }
 
