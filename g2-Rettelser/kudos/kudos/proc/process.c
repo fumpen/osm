@@ -260,12 +260,7 @@ int process_spawn(char const* executable, char const **argv)
     virtaddr_t entry_point;
     virtaddr_t stack_top;
     process_id_t new_pid;
-
-    if(strlen(executable) > 16){
-      kprintf("file name too long \n");
-      return -1;
-    }
-
+    
     new_pid = find_free_process();
 
     if(new_pid == -1){
@@ -274,7 +269,6 @@ int process_spawn(char const* executable, char const **argv)
     }
 
     my_thread = thread_create(&process_run, new_pid);
-    
 
     int setup_new_process_retval;
     setup_new_process_retval = setup_new_process(my_thread, executable, argv,
@@ -333,6 +327,12 @@ int process_join(process_id_t pid)
 
 void process_exit(int retval)
 {
+    
+    if(ret_val < 0){
+      kprintf("no free processes \n");
+	return -1;
+    }
+
     thread_table_t* my_thread = thread_get_current_thread_entry();
     
     process_id_t pid = my_thread->process_id;
