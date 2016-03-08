@@ -23,21 +23,22 @@
 
 int main(void) {
     
-    char prog[] = "[disk]hWorld.mips32";
     
-    usr_sem_t *parent2;
+    usr_sem_t *sem1;
+    usr_sem_t *sem2;
 
+    printf("CREATE 1\n ");
+    sem1 = syscall_usr_sem_open("child", 100);
+    printf("1 SEM CREATED \n");
 
-    printf("Parent: begin\n");
-    syscall_spawn(prog, NULL);
+    printf("CREATE 2\n ");
+    sem2 = syscall_usr_sem_open("child", 100);
+    printf("2 SEM CREATED\n");
 
-    parent2 = syscall_usr_sem_open("child", 100);
-    syscall_usr_sem_procure(&parent2);
+    syscall_usr_sem_procure(sem1);
+    syscall_usr_sem_procure(sem2);
 
-    for(int i = 0; i < 5000; i++);
-
-    printf("Parent: end\n");
-    
+    printf("END!\n\n");
 
     return 0;
 }

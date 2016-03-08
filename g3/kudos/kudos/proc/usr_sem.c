@@ -37,7 +37,7 @@
 
 
 static usr_sem_t sem_table[MAX_SEM];
-
+spinlock_t proc_lock;
 
 
 void usr_sem_init(void){
@@ -45,62 +45,104 @@ void usr_sem_init(void){
         sem_table[i].value = -1;
     }
 }
+
+
+int find_free_sem()
+{   
+    int free = -1;
+
+    int i;
+
+    for(i = 0; i < MAX_SEM; i++)
+    {
+        if(sem_table[i].value == -1){
+            free = i;
+            break;
+        }
+    }
+
+    return free;
+}
+
 usr_sem_t* usr_sem_open(const char* name, int value){
  
-    int length = strlen(name);
 
+
+    interrupt_status_t intr;
+    intr = _interrupt_disable();
+    spinlock_acquire(&proc_lock);
+
+
+    int length = strlen(name);
+    
+
+    /*-----------------------------------------------------------------------------
+     *  If the length of the name extends the Max name length
+     *-----------------------------------------------------------------------------*/
     if(length > NAME_LENGTH){
         return NULL;
     }
 
-    if(value >= 0)
-    {
-        int i;
 
-        for(i = 0; i < MAX_SEM; i++){
-            if(stringcmp(sem_table[i].name, name) == 0){
-                return NULL;
+    /*-----------------------------------------------------------------------------
+     *  A fresh semaphore of the given name will be created with value, unless
+     *  a semaphore of that name already exists.
+     *-----------------------------------------------------------------------------*/
+    if(value >= 0){ 
+        
+        for(int i = 0; i < MAX_SEM; i++){ 
+            int compareName = stringcmp(sem_table[i].name, name);
+
+            if(compareName == 0){
+                    kwrite("EQUAL!!!\n");
+                     return NULL;
             }
-                sem_table[i].sem = semaphore_create(value);
-                stringcopy(sem_table[i].name, name, NAME_LENGTH);
-                sem_table[i].value = 0;
+        }
+
+        int free = find_free_sem();
+
+        sem_table[free].sem = semaphore_create(value);
+        stringcopy(sem_table[free].name, name, NAME_LENGTH);
+        sem_table[free].value = value;
+        
+        spinlock_release(&proc_lock);
+        _interrupt_set_state(intr);
+
+        return &sem_table[free];
+    }
+    else{
+        for(int i = 0; i < MAX_SEM; i++){
+            if(stringcmp(sem_table[i].name, name) == 0){
+                
+                spinlock_release(&proc_lock);
+                _interrupt_set_state(intr);
+                
                 return &sem_table[i];
-
+            }
         }
-
     }
 
+
+    spinlock_release(&proc_lock);
+    _interrupt_set_state(intr);
     
-    for(int i = 0; i < MAX_SEM; i++){
-        if(stringcmp(sem_table[i].name, name) == 0){
-            return &sem_table[i];
-        }
-    }
-
     return NULL;
-
 }
 
 int usr_sem_destroy(usr_sem_t* sem){
 
     interrupt_status_t intr;
     intr = _interrupt_disable();
-    spinlock_acquire(&sem->slock);
+    spinlock_acquire(&proc_lock);
 
     if(sem->value < 0){
         kprintf("The process is blocked\n");
         return -1;
     }
 
-    semaphore_destroy(sem->sem);
-    
-    for(int i = 0; i < MAX_SEM; i++){
-        if(stringcmp(sem->name, sem_table[i].name) == 0){
-            sem_table[i].value = -1;
-        }
-    }
+    sem->value = -1;
 
-    spinlock_release(&sem->slock);
+    spinlock_release(&proc_lock);
     _interrupt_set_state(intr);
 
     return 0;
@@ -108,27 +150,26 @@ int usr_sem_destroy(usr_sem_t* sem){
 
 
 int usr_sem_procure(usr_sem_t* sem){
-    
-    for(int i = 0; i < MAX_SEM; i++){
-        if(&(sem_table[i]) == sem){
-            semaphore_P(sem->sem);
-            return 0;
-        }
+   
+    if(sem >= sem_table && sem <= &sem_table[MAX_SEM - 1]){
+        semaphore_P(sem->sem);
+    }else{
+        return -1;
     }
 
-    return -1;
+    return 0;
+
 }
 
 
 int usr_sem_vacate(usr_sem_t* sem){
 
-    for(int i = 0; i < MAX_SEM; i++){
-        if(&(sem_table[i]) == sem){
-            semaphore_V(sem->sem);
-
-            return 0;
-        }
+    if(sem >= sem_table && sem <= &sem_table[MAX_SEM - 1]){
+        semaphore_V(sem->sem);
+    }else{
+        return -1;
     }
 
-    return -1;
+    return 0;
+
 }

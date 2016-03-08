@@ -34,7 +34,6 @@ typedef struct {
     char name[NAME_LENGTH];
     int value;
 
-    spinlock_t slock;
     semaphore_t* sem;
 
 } usr_sem_t;
