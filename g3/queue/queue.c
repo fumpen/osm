@@ -120,7 +120,7 @@ queue_pop(struct queue *q, int *pri_ptr) {
      block until something is pushed. */
   pthread_mutex_lock(&lock);
 
-  if (q->count == 0) {
+  while(q->count == 0) {
     pthread_cond_wait(&condition, &lock);
   }
   *pri_ptr = q->root->pri;
