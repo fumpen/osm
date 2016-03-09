@@ -23,14 +23,22 @@
 
 int main(void){
     
-    usr_sem_t *t;
+    usr_sem_t *sem1;
+    usr_sem_t *sem2;
 
-    printf("Child\n");
 
+    sem1 = syscall_usr_sem_open("sem1", -1);
+    sem2 = syscall_usr_sem_open("sem2", -1);
 
-    t = syscall_usr_sem_open("child", 10);
-    
-    syscall_usr_sem_vacate(&t);
+       
+    syscall_usr_sem_procure(sem2);
+
+    for(int i = 0; i < 5000; i++);
+
+    printf("Second print!\n");
+
+    syscall_usr_sem_vacate(sem1);
+    syscall_usr_sem_procure(sem2);
 
     return 0;
 }

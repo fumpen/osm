@@ -94,7 +94,7 @@ usr_sem_t* usr_sem_open(const char* name, int value){
             int compareName = stringcmp(sem_table[i].name, name);
 
             if(compareName == 0){
-                    kwrite("EQUAL!!!\n");
+                    kwrite("Semaphor already exists!!\n");
                      return NULL;
             }
         }
@@ -120,13 +120,14 @@ usr_sem_t* usr_sem_open(const char* name, int value){
                 return &sem_table[i];
             }
         }
+
+        spinlock_release(&proc_lock);
+        _interrupt_set_state(intr);
+    
+        return NULL;
     }
 
 
-    spinlock_release(&proc_lock);
-    _interrupt_set_state(intr);
-    
-    return NULL;
 }
 
 int usr_sem_destroy(usr_sem_t* sem){

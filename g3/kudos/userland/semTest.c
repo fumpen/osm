@@ -27,18 +27,28 @@ int main(void) {
     usr_sem_t *sem1;
     usr_sem_t *sem2;
 
+    int prog2;
+
     printf("CREATE 1\n ");
-    sem1 = syscall_usr_sem_open("child", 100);
-    printf("1 SEM CREATED \n");
+    sem1 = syscall_usr_sem_open("sem1", 0);
 
     printf("CREATE 2\n ");
-    sem2 = syscall_usr_sem_open("child", 100);
-    printf("2 SEM CREATED\n");
+    sem2 = syscall_usr_sem_open("sem2", 0);
 
+    prog2 = syscall_spawn("[disk]hWorld.mips32", NULL);
+    prog2 = prog2;
+
+    printf("Get first print!!\n");
+
+    for(int i = 0; i < 5000; i++);
+    syscall_usr_sem_vacate(sem2);
     syscall_usr_sem_procure(sem1);
-    syscall_usr_sem_procure(sem2);
 
-    printf("END!\n\n");
+    printf("Thrid print!\n");
+    
+    for(int i = 0; i < 6000; i++);
+    syscall_usr_sem_vacate(sem2);
+
 
     return 0;
 }
