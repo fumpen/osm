@@ -31,20 +31,22 @@ void tlb_store_exception(void)
  *
  */
 
+/*
 void tlb_fill(pagetable_t *pagetable)
 {
   if(pagetable == NULL)
     return;
 
-  /* Check that the pagetable can fit into TLB. This is needed until
+   * Check that the pagetable can fit into TLB. This is needed until
      we have proper VM system, because the whole pagetable must fit
-     into TLB. */
+     into TLB. *
   KERNEL_ASSERT(pagetable->valid_count <= (_tlb_get_maxindex()+1));
 
   _tlb_write(pagetable->entries, 0, pagetable->valid_count);
 
-  /* Set ASID field in Co-Processor 0 to match thread ID so that
+  * Set ASID field in Co-Processor 0 to match thread ID so that
      only entries with the ASID of the current thread will match in
-     the TLB hardware. */
+     the TLB hardware. *
   _tlb_set_asid(pagetable->ASID);
 }
+*/
