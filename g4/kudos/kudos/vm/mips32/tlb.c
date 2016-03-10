@@ -4,74 +4,108 @@
 
 #include "kernel/panic.h"
 #include "kernel/assert.h"
+#include "kernel/thread.h"
 #include <tlb.h>
 #include <pagetable.h>
 
-/* 
- * "do_we_panic" funktionen har den funktion at bestemme hvilken situation vi er i
- * når vi kalder en af de tre func nedenunder. er vi i kernen, returnere vi 1,
- * er vi i userland og valid bit er unvalid, kan vi returnere 1, og er der inted galt
- * kan vi returnere 0.
- * OBS! så vidt jeg ved, kan man ikke tjekke for en valid bit medmindre der er en page
- * altså hvis det første tjek evaluere false, skal vi verken lukke programmet i userland eller
- * kalde kernel_panic, men gøre hvad funktionen burde goere
-*/
-int do_we_panic(pagetable_t *pagetable){
-  /* her skal "ubestemt_var" være "true" hvis "valid bit" er usand for det aktuelle page
-   * se filen "tlb.h" og undersoeg om vi kan tilgaa den var herinde */
-  if(ubestemt_var){
-    if (pagetable != NULL){
-      kprintf("evaluated as userland \n ");
-      /* is in userland */
-      return 2;
-    }else{
-      kprintf("evaluated as kernel \n ");
-      /* is in kernel-mode */
-      return 1;
+
+void lookupAdd(){
+    
+
+    /*-----------------------------------------------------------------------------
+     *  Gets the state parameters for TLB exception
+     *-----------------------------------------------------------------------------*/
+    tlb_exception_state_t tlb_state;
+    _tlb_get_exception_state(&tlb_state);
+
+
+    /*-----------------------------------------------------------------------------
+     *  Gets the current thread and pagetable
+     *-----------------------------------------------------------------------------*/
+    thread_table_t* current_thread = thread_get_current_thread_entry();
+    pagetable_t* pagetable = current_thread->pagetable;
+
+
+    /*-----------------------------------------------------------------------------
+     *  The failing virtual address (bits 31..13)
+     *-----------------------------------------------------------------------------*/
+    uint32_t badvpn2 = tlb_state.badvpn2;
+
+    tlb_entry_t* entry = NULL;
+
+
+    /*-----------------------------------------------------------------------------
+     *  To distinguishe between (TLB refil) or (TLB invalid) compare VP2N with badvpn,
+     *  if VPN2 is equal to badvpn2 then refil.
+     *  ____________________________________________________________________________
+     *  
+     *  VPN2: is the page pair number. VPN2 describes which consecutive 2 page region
+     *  of virtual address space this entry maps.
+     *  ____________________________________________________________________________
+     *  
+     *  valid_count: is the number of valid mapping entries in the pagetable
+     *-----------------------------------------------------------------------------*/
+    for(unsigned int i = 0; i < pagetable->valid_count; i++){
+            if(pagetable->entries[i].VPN2 == badvpn2){
+                entry = &(pagetable->entries[i]);
+            }
     }
-  }else{
-    /* no error (yet...) */
-    return 0;
-  }
+
+
+    /*-----------------------------------------------------------------------------
+     *  If no entry is found, then we are in kernel mode or access outside of mem
+     *-----------------------------------------------------------------------------*/
+    if(entry == NULL){
+
+        kprintf("TLB exception. Details:\n"
+                "Failed Virtual Address: 0x%8.8x\n"
+                "Virtual Page Number:    0x%8.8x\n"
+                "ASID (Thread number):   %d\n",
+                tlb_state.badvaddr, tlb_state.badvpn2, tlb_state.asid);
+       
+        KERNEL_PANIC("TLB exception");
+    }
+
+
+    /*-----------------------------------------------------------------------------
+     *  Random replacement strategy for page entries
+     *-----------------------------------------------------------------------------*/
+    _tlb_write_random(entry);
+
 }
 
 void tlb_modified_exception(void)
 {
-  pagetable_t *pagetable = thread_get_current_thread_entry()->pagetable;
-  int where_are_we;
 
-  /* if we're in kernel-mode kernel panic is called */
-  where_are_we = do_we_panic(pagetable);
-  if (where_are_we == 1){
-  KERNEL_PANIC("Unhandled TLB modified exception");
-  }
+    /*-----------------------------------------------------------------------------
+     * Checks if the exception is in userland or kernel mode. 
+     *-----------------------------------------------------------------------------*/
+    thread_table_t* current_thread = thread_get_current_thread_entry();
+    pagetable_t* pagetable = current_thread->pagetable;
 
-  /* if */
+    /*-----------------------------------------------------------------------------
+     *  If exception is in userland mode, the process should exit
+     *-----------------------------------------------------------------------------*/
+    if(pagetable != NULL){
+        thread_finish();
+    }
+
+   /*-----------------------------------------------------------------------------
+    * If exception is in kernel mode, the kernel panic
+    *-----------------------------------------------------------------------------*/ 
+    KERNEL_PANIC("Unhandled TLB modified exception");
 }
 
 void tlb_load_exception(void)
 {
-  pagetable_t *pagetable = thread_get_current_thread_entry()->pagetable;
-  int where_are_we;
-
-  /* if we're in kernel-mode kernel panic is called */
-  where_are_we = do_we_panic(pagetable);
-  if (where_are_we == 1){
-  KERNEL_PANIC("Unhandled TLB load exception");
-  }
   
+    lookupAdd();
 }
 
 void tlb_store_exception(void)
 {
-  pagetable_t *pagetable = thread_get_current_thread_entry()->pagetable;
-  int where_are_we;
-
-  /* if we're in kernel-mode kernel panic is called */
-  where_are_we = do_we_panic(pagetable);
-  if (where_are_we == 1){
-  KERNEL_PANIC("Unhandled TLB store exception");
-  }
+ 
+    lookupAdd();
 }
 
 /*

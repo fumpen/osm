@@ -168,6 +168,8 @@ void interrupt_handle(virtaddr_t cause) {
     /*
     tlb_fill(thread_get_current_thread_entry()->pagetable);
     */
+  
+    _tlb_set_asid(thread_get_current_thread());
   }
 }
 

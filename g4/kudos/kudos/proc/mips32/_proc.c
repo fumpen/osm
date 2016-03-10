@@ -11,6 +11,8 @@
 
 void process_set_pagetable(pagetable_t *pagetable)
 {
+  pagetable = pagetable;
+
   interrupt_status_t intr_status;
 
   /* Put the mapped pages into TLB. Here we assume that the pages fit
