@@ -23,6 +23,26 @@ int syscall_read(char *buffer) {
   return 1;
 }
 
+
+void* syscall_memlimit(void* new_end){
+    
+    process_control_block_t* proc = process_get_current_process_entry();
+
+
+    /*-----------------------------------------------------------------------------
+     *  If new_end is NULL, return the current heap_end
+     *-----------------------------------------------------------------------------*/
+    if(new_end == NULL){
+        return proc->heap_end;
+    }
+
+    proc->heap_end = new_end;    
+
+    return proc->heap_end;
+}
+
+
+
 /**
  * Handle system calls. Interrupts are enabled when this function is
  * called.
@@ -60,6 +80,9 @@ uintptr_t syscall_entry(uintptr_t syscall,
     break;
   case SYSCALL_JOIN:
     return process_join((process_id_t) arg0);
+    break;
+  case SYSCALL_MEMLIMIT:
+    return (int) syscall_memlimit((void*)arg0);
     break;
   default:
     KERNEL_PANIC("Unhandled system call\n");

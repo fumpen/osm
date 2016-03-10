@@ -26,6 +26,7 @@ int main() {
   /* Find the current (initial) heap end. */
   a_string = syscall_memlimit(NULL);
 
+  
   /* Extend the heap, and check that it worked. */
   if (syscall_memlimit(a_string + STRING_LENGTH) == NULL) {
     /* It didn't work, so exit already. */
