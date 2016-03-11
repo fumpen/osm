@@ -40,7 +40,7 @@ typedef struct {
   virtaddr_t stack_top;
 
 /* Holds the address of free memory mapped to a physical page */
-  void* heap_end;
+  uint32_t heap_end;
 } process_control_block_t;
 
 
