@@ -10,6 +10,7 @@
 #include "vm/memory.h"
 #include "drivers/polltty.h"
 #include "proc/process.h"
+#include "kernel/thread.h"
 
 int syscall_write(const char *buffer, int length) {
   /* Not a G1 solution! */
@@ -27,10 +28,10 @@ int syscall_read(char *buffer) {
 void* syscall_memlimit(void* new_end){
     
     process_control_block_t* proc = process_get_current_process_entry();
-
+    thread_table_t *thread = thread_get_current_thread_entry();
 
     if(proc->heap_end > new_end){
-        return -1;
+        return NULL;
     }
     
     /*-----------------------------------------------------------------------------
@@ -40,7 +41,7 @@ void* syscall_memlimit(void* new_end){
         return proc->heap_end;
     }
 
-    proc->heap_end = new_end;    
+    vm_map(thread->pagetable, physmem_allocblock(), (unsigned int)proc->heap_end, 0);    
 
     return proc->heap_end;
 }
