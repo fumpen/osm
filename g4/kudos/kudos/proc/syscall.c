@@ -29,6 +29,10 @@ void* syscall_memlimit(void* new_end){
     process_control_block_t* proc = process_get_current_process_entry();
 
 
+    if(proc->heap_end > new_end){
+        return -1;
+    }
+    
     /*-----------------------------------------------------------------------------
      *  If new_end is NULL, return the current heap_end
      *--------------------------------------------------------------------------*/

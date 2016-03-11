@@ -30,6 +30,7 @@ void process_reset(process_id_t pid)
 {
     process_table[pid].state         = PROCESS_FREE;
     process_table[pid].retval        = 0;
+    process_table[pid].heap_end      = elf.rw_vaddr + elf.rw_size;
 }
 
 /* Initialize process table and spinlock */
@@ -98,7 +99,6 @@ int setup_new_process(TID_t thread,
   if (elf.entry_point < PAGE_SIZE) {
     return -1;
   }
-
   *entry_point = elf.entry_point;
 
   pagetable = vm_create_pagetable(thread);
@@ -153,6 +153,8 @@ int setup_new_process(TID_t thread,
   }
 
   /* Set up argc and argv on the stack. */
+    
+  heap_end = elf.rw_vaddr + elf.rw_size;
 
   /* Start by preparing ancillary information for the new process argv. */
   if (argv_src != NULL)
