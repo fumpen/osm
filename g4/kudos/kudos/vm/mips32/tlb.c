@@ -25,6 +25,12 @@ void lookupAdd(){
     thread_table_t* current_thread = thread_get_current_thread_entry();
     pagetable_t* pagetable = current_thread->pagetable;
 
+    /*-----------------------------------------------------------------------------
+     *  If no entry is found, then we are in kernel mode or access outside of mem
+     *-----------------------------------------------------------------------------*/
+    if(pagetable == NULL){
+        KERNEL_PANIC("TLB exception");
+    }
 
     /*-----------------------------------------------------------------------------
      *  The failing virtual address (bits 31..13)
@@ -52,20 +58,9 @@ void lookupAdd(){
     }
 
 
-    /*-----------------------------------------------------------------------------
-     *  If no entry is found, then we are in kernel mode or access outside of mem
-     *-----------------------------------------------------------------------------*/
     if(entry == NULL){
-
-        kprintf("TLB exception. Details:\n"
-                "Failed Virtual Address: 0x%8.8x\n"
-                "Virtual Page Number:    0x%8.8x\n"
-                "ASID (Thread number):   %d\n",
-                tlb_state.badvaddr, tlb_state.badvpn2, tlb_state.asid);
-       
-        KERNEL_PANIC("TLB exception");
+        thread_finish();
     }
-
 
     /*-----------------------------------------------------------------------------
      *  Random replacement strategy for page entries
