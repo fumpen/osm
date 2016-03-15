@@ -30,7 +30,8 @@ int main() {
   /* Extend the heap, and check that it worked. */
   if (syscall_memlimit(a_string + STRING_LENGTH) == NULL) {
     /* It didn't work, so exit already. */
-    return 1;
+      printf("ERROR\n");
+      return 1;
   }
 
   /* Copy the source string to the dynamically allocated memory. */
@@ -38,6 +39,7 @@ int main() {
     a_string[i] = STRING_SOURCE[i];
   }
 
+  printf("WORK!!\n");
   /* Write from the dynamically allocated memory. */
   syscall_write(1, a_string, STRING_LENGTH);
 

@@ -29,6 +29,7 @@ void lookupAdd(){
      *  If no entry is found, then we are in kernel mode or access outside of mem
      *-----------------------------------------------------------------------------*/
     if(pagetable == NULL){
+        kprintf("KERNEL MODE\n");
         KERNEL_PANIC("TLB exception");
     }
 
@@ -36,6 +37,7 @@ void lookupAdd(){
      *  The failing virtual address (bits 31..13)
      *-----------------------------------------------------------------------------*/
     uint32_t badvpn2 = tlb_state.badvpn2;
+    uint32_t badaddr = tlb_state.badvaddr;
 
     tlb_entry_t* entry = NULL;
 
@@ -51,18 +53,22 @@ void lookupAdd(){
      *  
      *  valid_count: is the number of valid mapping entries in the pagetable
      *-----------------------------------------------------------------------------*/
+
     for(unsigned int i = 0; i < pagetable->valid_count; i++){
             if(pagetable->entries[i].VPN2 == badvpn2){
-                if(badvpn2 == pagetable->entries[i].PFN0){
-                    if(pagetable->entries[i].V0 == 1){
+                uint32_t evenodd = !(badaddr & 4096);
+                if(evenodd){
+                    if(pagetable->entries[i].V0){
+                        entry = &(pagetable->entries[i]);
                         _tlb_write_random(entry); 
                     }
                     else{
                        process_exit(current_thread->process_id);
                     }
                 }
-                if(badvpn2 == pagetable->entries[i].PFN1){
-                    if(pagetable->entries[i].V1 == 1){
+                else{
+                    if(pagetable->entries[i].V1){
+                        entry = &(pagetable->entries[i]);
                         _tlb_write_random(entry);
                     }
                     else{
@@ -72,14 +78,6 @@ void lookupAdd(){
             }
     }
 
-    if(entry == NULL){
-        process_exit(current_thread->process_id);
-    }
-
-    /*-----------------------------------------------------------------------------
-     *  Random replacement strategy for page entries
-     *-----------------------------------------------------------------------------*/
-    _tlb_write_random(entry);
 }
 
 void tlb_modified_exception(void)

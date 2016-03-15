@@ -78,7 +78,6 @@ int setup_new_process(TID_t thread,
   thread_table_t *thread_entry = thread_get_thread_entry(thread);
 
   process_control_block_t* proc = process_get_current_process_entry();
-  uint32_t *heap_end = proc->heap_end;
   
   int argc = 1;
   virtaddr_t argv_begin;
@@ -156,8 +155,17 @@ int setup_new_process(TID_t thread,
   }
 
   /* Set up argc and argv on the stack. */
-    
-  *heap_end = elf.rw_vaddr + elf.rw_size;
+   
+   unsigned int new_size = elf.rw_vaddr + elf.rw_size;
+
+   if((new_size % 4096) == 0){
+       physmem_allocblock();
+       vm_map(pagetable, phys_page, new_size, 1);
+   }
+
+   proc->heap_end = (void*)new_size;
+
+
 
   /* Start by preparing ancillary information for the new process argv. */
   if (argv_src != NULL)
