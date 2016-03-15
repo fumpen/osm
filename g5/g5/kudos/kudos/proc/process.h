@@ -28,6 +28,10 @@ typedef struct {
    the right thing. */
     process_state_t state;
 
+/* The file table for a process */
+
+    int fileTable[PROCESS_MAX_FILES];
+
 /* A parent should be able to get a child's return value after it exits, so we
    store it here. */
     int retval;

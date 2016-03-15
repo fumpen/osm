@@ -274,6 +274,11 @@ process_id_t process_spawn(const char *executable, const char **argv)
     ret = pid;
   }
 
+
+  for(int i = 0; i < PROCESS_MAX_FILES; i++){
+      process_table[pid].fileTable[i] = -1;
+  }
+
   thread_run(thread);
   spinlock_release(&process_table_slock);
   return ret;

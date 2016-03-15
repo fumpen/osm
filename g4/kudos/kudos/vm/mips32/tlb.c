@@ -53,20 +53,33 @@ void lookupAdd(){
      *-----------------------------------------------------------------------------*/
     for(unsigned int i = 0; i < pagetable->valid_count; i++){
             if(pagetable->entries[i].VPN2 == badvpn2){
-                entry = &(pagetable->entries[i]);
+                if(badvpn2 == pagetable->entries[i].PFN0){
+                    if(pagetable->entries[i].V0 == 1){
+                        _tlb_write_random(entry); 
+                    }
+                    else{
+                       process_exit(current_thread->process_id);
+                    }
+                }
+                if(badvpn2 == pagetable->entries[i].PFN1){
+                    if(pagetable->entries[i].V1 == 1){
+                        _tlb_write_random(entry);
+                    }
+                    else{
+                        process_exit(current_thread->process_id);
+                    }
+                }
             }
     }
 
-
     if(entry == NULL){
-        thread_finish();
+        process_exit(current_thread->process_id);
     }
 
     /*-----------------------------------------------------------------------------
      *  Random replacement strategy for page entries
      *-----------------------------------------------------------------------------*/
     _tlb_write_random(entry);
-
 }
 
 void tlb_modified_exception(void)
@@ -82,7 +95,7 @@ void tlb_modified_exception(void)
      *  If exception is in userland mode, the process should exit
      *-----------------------------------------------------------------------------*/
     if(pagetable != NULL){
-        thread_finish();
+        process_exit(current_thread->process_id);
     }
 
    /*-----------------------------------------------------------------------------
