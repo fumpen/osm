@@ -28,18 +28,22 @@ int syscall_read(char *buffer) {
 void* syscall_memlimit(void* new_end){
     
     process_control_block_t* proc = process_get_current_process_entry();
-    //thread_table_t *thread = thread_get_current_thread_entry();
+    thread_table_t *thread = thread_get_current_thread_entry();
+    pagetable_t *pagetable = thread->pagetable;
 
-    if(proc->heap_end > new_end){
-        return NULL;
-    }
     
+    uintptr_t phys_page;
+   
+    phys_page = physmem_allocblock();
     /*-----------------------------------------------------------------------------
      *  If new_end is NULL, return the current heap_end
      *--------------------------------------------------------------------------*/
     if(new_end == NULL){
         return proc->heap_end;
-    }
+    }   
+    
+    
+    vm_map(pagetable, phys_page, (unsigned int)new_end, 1);
 
     proc->heap_end = new_end;
 
