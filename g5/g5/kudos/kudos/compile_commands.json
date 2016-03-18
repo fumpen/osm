@@ -1,0 +1,217 @@
+[
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o init/common.mips32.o -g -I. -std=c99 -pedantic -G0 init/common.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/init/common.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o kernel/panic.mips32.o -g -I. -std=c99 -pedantic -G0 kernel/panic.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/kernel/panic.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o kernel/thread.mips32.o -g -I. -std=c99 -pedantic -G0 kernel/thread.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/kernel/thread.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o kernel/scheduler.mips32.o -g -I. -std=c99 -pedantic -G0 kernel/scheduler.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/kernel/scheduler.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o kernel/sleepq.mips32.o -g -I. -std=c99 -pedantic -G0 kernel/sleepq.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/kernel/sleepq.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o kernel/semaphore.mips32.o -g -I. -std=c99 -pedantic -G0 kernel/semaphore.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/kernel/semaphore.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o kernel/halt.mips32.o -g -I. -std=c99 -pedantic -G0 kernel/halt.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/kernel/halt.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o kernel/stalloc.mips32.o -g -I. -std=c99 -pedantic -G0 kernel/stalloc.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/kernel/stalloc.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o lib/libc.mips32.o -g -I. -std=c99 -pedantic -G0 lib/libc.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/lib/libc.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o lib/xprintf.mips32.o -g -I. -std=c99 -pedantic -G0 lib/xprintf.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/lib/xprintf.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o lib/bitmap.mips32.o -g -I. -std=c99 -pedantic -G0 lib/bitmap.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/lib/bitmap.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o lib/debug.mips32.o -g -I. -std=c99 -pedantic -G0 lib/debug.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/lib/debug.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o drivers/bootargs.mips32.o -g -I. -std=c99 -pedantic -G0 drivers/bootargs.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/drivers/bootargs.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o drivers/disksched.mips32.o -g -I. -std=c99 -pedantic -G0 drivers/disksched.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/drivers/disksched.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o drivers/timer.mips32.o -g -I. -std=c99 -pedantic -G0 drivers/timer.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/drivers/timer.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o proc/elf.mips32.o -g -I. -std=c99 -pedantic -G0 proc/elf.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/proc/elf.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o proc/syscall.mips32.o -g -I. -std=c99 -pedantic -G0 proc/syscall.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/proc/syscall.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o proc/process.mips32.o -g -I. -std=c99 -pedantic -G0 proc/process.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/proc/process.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o fs/vfs.mips32.o -g -I. -std=c99 -pedantic -G0 fs/vfs.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/fs/vfs.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o fs/tfs.mips32.o -g -I. -std=c99 -pedantic -G0 fs/tfs.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/fs/tfs.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o fs/filesystems.mips32.o -g -I. -std=c99 -pedantic -G0 fs/filesystems.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/fs/filesystems.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o lib/gcc/divdi3.mips32.o -g -I. -std=c99 -pedantic -G0 lib/gcc/divdi3.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/lib/gcc/divdi3.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o lib/gcc/qdivrem.mips32.o -g -I. -std=c99 -pedantic -G0 lib/gcc/qdivrem.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/lib/gcc/qdivrem.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o lib/gcc/udivdi3.mips32.o -g -I. -std=c99 -pedantic -G0 lib/gcc/udivdi3.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/lib/gcc/udivdi3.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o lib/gcc/umoddi3.mips32.o -g -I. -std=c99 -pedantic -G0 lib/gcc/umoddi3.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/lib/gcc/umoddi3.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o vm/memory.mips32.o -g -I. -std=c99 -pedantic -G0 vm/memory.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/vm/memory.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o init/mips32/main.mips32.o -g -I. -std=c99 -pedantic -G0 init/mips32/main.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/init/mips32/main.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o kernel/mips32/cswitch.mips32.o -g -I. -std=c99 -pedantic -G0 kernel/mips32/cswitch.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/kernel/mips32/cswitch.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o kernel/mips32/interrupt.mips32.o -g -I. -std=c99 -pedantic -G0 kernel/mips32/interrupt.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/kernel/mips32/interrupt.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o kernel/mips32/exception.mips32.o -g -I. -std=c99 -pedantic -G0 kernel/mips32/exception.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/kernel/mips32/exception.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o vm/mips32/mm_virt.mips32.o -g -I. -std=c99 -pedantic -G0 vm/mips32/mm_virt.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/vm/mips32/mm_virt.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o vm/mips32/tlb.mips32.o -g -I. -std=c99 -pedantic -G0 vm/mips32/tlb.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/vm/mips32/tlb.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o vm/mips32/mm_phys.mips32.o -g -I. -std=c99 -pedantic -G0 vm/mips32/mm_phys.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/vm/mips32/mm_phys.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o drivers/mips32/disk.mips32.o -g -I. -std=c99 -pedantic -G0 drivers/mips32/disk.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/drivers/mips32/disk.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o drivers/mips32/metadev.mips32.o -g -I. -std=c99 -pedantic -G0 drivers/mips32/metadev.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/drivers/mips32/metadev.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o drivers/mips32/polltty.mips32.o -g -I. -std=c99 -pedantic -G0 drivers/mips32/polltty.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/drivers/mips32/polltty.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o drivers/mips32/tty.mips32.o -g -I. -std=c99 -pedantic -G0 drivers/mips32/tty.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/drivers/mips32/tty.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o drivers/mips32/device.mips32.o -g -I. -std=c99 -pedantic -G0 drivers/mips32/device.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/drivers/mips32/device.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o drivers/mips32/drivers.mips32.o -g -I. -std=c99 -pedantic -G0 drivers/mips32/drivers.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/drivers/mips32/drivers.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o proc/mips32/exception.mips32.o -g -I. -std=c99 -pedantic -G0 proc/mips32/exception.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/proc/mips32/exception.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o proc/mips32/_syscall.mips32.o -g -I. -std=c99 -pedantic -G0 proc/mips32/_syscall.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/proc/mips32/_syscall.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips32/ -I./lib/mips32/ -I./kernel/mips32/ -I./vm/mips32/ -o proc/mips32/_proc.mips32.o -g -I. -std=c99 -pedantic -G0 proc/mips32/_proc.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/proc/mips32/_proc.c"
+    },
+    {
+        "command": "cc -c -I./drivers/mips -I./drivers/x86_64 -I./vm/mips -I./vm/x86_64 -I./kernel/mips -I./kernel/x86_64 -o util/tfstool.o -g -I. -W util/tfstool.c",
+        "directory": "/home/truls/uni/osm/kudos/kudos",
+        "file": "/home/truls/uni/osm/kudos/kudos/util/tfstool.c"
+    }
+]

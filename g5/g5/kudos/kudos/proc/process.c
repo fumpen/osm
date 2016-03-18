@@ -13,6 +13,10 @@
 #include "kernel/sleepq.h"
 #include "vm/memory.h"
 
+#include "drivers/device.h"     // device_*
+#include "drivers/gcd.h"        // gcd_*
+#include "kernel/assert.h"      // KERNEL_ASSERT
+#include "proc/syscall.h"       // FILEHANDLE_*
 
 /** @name Process startup
  *
@@ -345,4 +349,66 @@ void process_exit(int retval)
   spinlock_release(&process_table_slock);
   _interrupt_set_state(intr_status);
   thread_finish();
+}
+
+static int tty_read(void *buffer, int length) {
+  device_t *dev;
+  gcd_t *gcd;
+
+  dev = device_get(TYPECODE_TTY, 0);
+  if (dev == NULL) return IO_TTY_UNAVAILABLE;
+  gcd = (gcd_t *)dev->generic_device;
+  if (gcd == NULL) return IO_TTY_UNAVAILABLE;
+
+  return gcd->read(gcd, buffer, length);
+}
+
+static int tty_write(const void *buffer, int length) {
+  device_t *dev;
+  gcd_t *gcd;
+
+  dev = device_get(TYPECODE_TTY, 0);
+  if (dev == NULL) return IO_TTY_UNAVAILABLE;
+  gcd = (gcd_t *)dev->generic_device;
+  if (gcd == NULL) return IO_TTY_UNAVAILABLE;
+
+  return gcd->write(gcd, buffer, length);
+}
+
+int process_read(int filehandle, void *buffer, int length) {
+  int retval = 0;
+
+  if (length < 0) {
+    retval = IO_NEGATIVE_LENGTH;
+  } else if (!IN_USERLAND(buffer) || !IN_USERLAND(buffer + length)) {
+    KERNEL_PANIC("SEGFAULT\n");
+  } else if (filehandle == FILEHANDLE_STDIN) {
+    retval = tty_read(buffer, length);
+  } else if (filehandle == FILEHANDLE_STDOUT
+            || filehandle == FILEHANDLE_STDERR) {
+    retval = IO_INVALID_HANDLE;
+  } else {
+    retval = IO_NOT_IMPLEMENTED;
+  }
+
+  return retval;
+}
+
+int process_write(int filehandle, const void *buffer, int length) {
+  int retval = 0;
+
+  if (length < 0) {
+    retval = IO_NEGATIVE_LENGTH;
+  } else if (!IN_USERLAND(buffer) || !IN_USERLAND(buffer + length)) {
+    KERNEL_PANIC("SEGFAULT\n");
+  } else if (filehandle == FILEHANDLE_STDIN) {
+    retval = IO_INVALID_HANDLE;
+  } else if (filehandle == FILEHANDLE_STDOUT
+            || filehandle == FILEHANDLE_STDERR) {
+    retval = tty_write(buffer, length);
+  } else {
+    retval = IO_NOT_IMPLEMENTED;
+  }
+
+  return retval;
 }

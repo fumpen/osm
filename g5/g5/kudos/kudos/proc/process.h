@@ -28,7 +28,6 @@ typedef struct {
    the right thing. */
     process_state_t state;
 
-/* The file table for a process */
 
     int fileTable[PROCESS_MAX_FILES];
 
@@ -67,5 +66,9 @@ process_id_t process_get_current_process(void);
 
 /* Return PCB of current process. */
 process_control_block_t *process_get_current_process_entry(void);
+
+int process_read(int filehandle, void *buffer, int length);
+
+int process_write(int filehandle, const void *buffer, int length);
 
 #endif

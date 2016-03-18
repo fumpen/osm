@@ -8,11 +8,12 @@
 #include "lib/libc.h"
 #include "kernel/assert.h"
 #include "vm/memory.h"
-#include "drivers/polltty.h"
 #include "proc/process.h"
 #include "fs/vfs.h"
 #include "drivers/device.h"
 #include "drivers/gcd.h"
+
+
 int syscall_write(int filehandle, const void *buffer, int length) {
     
     gcd_t *gcd;
@@ -132,7 +133,6 @@ int syscall_file(const char *pathname, int nth, char *buffer){
 
     return fileN;
 }
-
 /**
  * Handle system calls. Interrupts are enabled when this function is
  * called.
@@ -140,6 +140,8 @@ int syscall_file(const char *pathname, int nth, char *buffer){
 uintptr_t syscall_entry(uintptr_t syscall,
                         uintptr_t arg0, uintptr_t arg1, uintptr_t arg2)
 {
+  int retval = 0;
+
   arg0 = arg0;
   arg1 = arg1;
   arg2 = arg2;
@@ -152,6 +154,7 @@ uintptr_t syscall_entry(uintptr_t syscall,
    * returning from this function the userland context will be
    * restored from user_context.
    */
+  
   switch(syscall) {
   case SYSCALL_HALT:
     halt_kernel();
@@ -196,5 +199,5 @@ uintptr_t syscall_entry(uintptr_t syscall,
     KERNEL_PANIC("Unhandled system call\n");
   }
 
-  return 0;
+  return retval;
 }

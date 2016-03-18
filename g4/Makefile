@@ -1,4 +1,4 @@
-STUDENTS=Frederik_Jeppe
+STUDENTS=Frederik_Jeppe_Resub
 ASSIGNMENT=4
 VERSION=1
 

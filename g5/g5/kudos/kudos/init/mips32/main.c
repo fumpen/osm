@@ -106,6 +106,9 @@ void init(void)
   kwrite("Initializing scheduler\n");
   scheduler_init();
 
+  kwrite("Initializing processes\n");
+  process_init();
+
   kwrite("Initializing virtual memory\n");
   vm_init();
 

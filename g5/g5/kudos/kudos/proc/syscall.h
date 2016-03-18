@@ -33,4 +33,9 @@
 #define FILEHANDLE_STDOUT 1
 #define FILEHANDLE_STDERR 2
 
+#define IO_INVALID_HANDLE  (-1)
+#define IO_NOT_IMPLEMENTED (-2)
+#define IO_NEGATIVE_LENGTH (-3)
+#define IO_TTY_UNAVAILABLE (-4)
+
 #endif
